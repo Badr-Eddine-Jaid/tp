@@ -3,7 +3,6 @@ package pharmacie.entity;
 import java.util.LinkedList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,23 +20,23 @@ import lombok.ToString;
 @Entity
 @Getter @Setter @NoArgsConstructor @ToString
 public class Categorie {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Setter(AccessLevel.NONE) // la clé est auto-générée par la BD, On ne veut pas de "setter"
-	private Integer code;
 
-	@NotBlank // pour éviter les libellés vides
-	@Size(min = 1, max = 255)
-	@Column(unique=true, length = 255, nullable = false)
-	private String libelle;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private Integer code;
 
-	@Size(max = 255)
-	@Column(length = 255)
-	private String description;
+    @NotBlank
+    @Size(max = 255)
+    @Column(unique = true, length = 255, nullable = false)
+    private String libelle;
 
-	@ToString.Exclude
-	// CascadeType.ALL signifie que toutes les opérations CRUD sur la catégorie sont également appliquées à ses médicaments
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "categorie")
-	private List<Medicament> medicaments = new LinkedList<>();
+    @Size(max = 255)
+    @Column(length = 255)
+    private String description;
 
+    // ⚠️ PAS de cascade REMOVE ici, sinon supprimer catégorie supprimerait les médicaments.
+    @OneToMany(mappedBy = "categorie")
+    @ToString.Exclude
+    private List<Medicament> medicaments = new LinkedList<>();
 }

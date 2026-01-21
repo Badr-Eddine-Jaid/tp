@@ -10,19 +10,14 @@ import pharmacie.entity.Dispensaire;
 
 public interface CommandeRepository extends JpaRepository<Commande, Integer> {
 
-    /**
-     * Recherche toutes les commandes d'un dispensaire
-     */
     List<Commande> findByDispensaire(Dispensaire dispensaire);
 
-    /**
-     * Recherche les commandes envoyées après une date donnée
-     */
     List<Commande> findByEnvoyeeLeAfter(LocalDate date);
 
-    /**
-     * Recherche les commandes saisies avant une date donnée
-     */
     List<Commande> findBySaisieLeBefore(LocalDate date);
-     List<Commande> findBySaisieLeAfter(LocalDate date);
+
+    List<Commande> findBySaisieLeAfter(LocalDate date);
+
+    // ✅ IMPORTANT : dispensaireCode est Integer (Dispensaire.code = Integer)
+    List<Commande> findByDispensaireCodeAndEnvoyeeLeIsNull(Integer dispensaireCode);
 }

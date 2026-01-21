@@ -1,24 +1,26 @@
 package pharmacie.dao;
 
-
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import pharmacie.entity.Medicament;
 
-// Cette interface sera auto-implémentée par Spring
 public interface MedicamentRepository extends JpaRepository<Medicament, Integer> {
-    /**
-     * Trouve un médicament à partir de son nom (unique dans Medicament)
-     * @return un médicament "optionnel"
-     */
-    Optional<Medicament>findByNom(String nom);
 
-    /**
-     * Trouve les médicaments disponibles (indisponible = false)
-     * @return la liste des médicaments disponibles
-     */
+    Optional<Medicament> findByNom(String nom);
+
     List<Medicament> findByIndisponibleFalse();
+
+    @Query("""
+      select m
+      from Medicament m
+      where m.categorie.code = :categorieCode
+        and m.indisponible = false
+        and m.unitesEnStock >= m.unitesCommandees
+    """)
+    List<Medicament> findDisponiblesALaCommandeByCategorieCode(@Param("categorieCode") Integer categorieCode);
 }
